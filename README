@@ -1,0 +1,57 @@
+tcl-tk
+------------------------------------------
+An X11 toolkit implemented with the Tcl scripting language.
+
+Runtime requirements:
+  cygwin-1.7.5-1
+  libfontconfig1-2.8.0-1
+  libgcc1-4.3.4-3
+  libX11_6-1.3.3-1
+  libXft2-2.1.14-1
+  libXss1-1.2.0-1
+  tcl-8.5.8-1
+
+Build requirements:
+(besides corresponding -devel packages)
+  autoconf2.5-2.65-1
+  automake1.4-1.4p6-10
+  binutils-2.20.51-2
+  cygport-0.9.96-1
+  gawk-3.1.7-1
+  gcc-core-4.3.4-3
+  make-3.81-2
+  sed-4.2.1-1
+
+Canonical website:
+  http://www.tcl.tk/
+
+Canonical download:
+  http://downloads.sourceforge.net/tcl/
+
+-------------------------------------------
+
+Build instructions:
+  unpack tcl-tk-8.5.8-X-src.tar.bz2
+    if you use setup to install this src package, it will be
+	 unpacked under /usr/src automatically
+  cd /usr/src
+  cygport ./tcl-tk-8.5.8-X.cygport all
+
+This will create:
+  /usr/src/tcl-tk-8.5.8-X-src.tar.bz2
+  /usr/src/tcl-tk-8.5.8-X.tar.bz2
+
+-------------------------------------------
+
+Port Notes:
+
+----- version 8.5.8-1 -----
+Version bump.
+
+----- version 8.5.6-1 -----
+Initial release of *NIX/X11 Tcl/Tk for Cygwin-1.7.
+
+
+Cygwin port maintained by:
+http://sourceware.org/cygwinports/
+

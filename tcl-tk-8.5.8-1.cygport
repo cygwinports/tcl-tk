@@ -1,0 +1,56 @@
+ORIG_PN="tk"
+slot=${PV_MAJ_MIN}
+
+DESCRIPTION="Tcl X11 GUI Toolkit"
+HOMEPAGE="http://tcl.tk/"
+SRC_URI="mirror://sourceforge/tcl/${ORIG_PN}${PV}-src.tar.gz"
+SRC_DIR="${ORIG_PN}${PV}"
+
+PATCH_URI="8.5-cygwin.patch"
+
+DISTCLEANFILES="unix/aclocal.m4"
+DIFF_EXCLUDES="aclocal.m4 configure"
+
+src_compile() {
+	cd ${S}/unix
+	WANT_AUTOMAKE=1.4
+	cygautoreconf
+
+	mkdir -p ${B}/unix
+	cd ${B}/unix
+	cygconf --enable-man-symlinks
+	cygmake -j1 TK_SHLIB_LD_EXTRAS="-Wl,--out-implib,\${TK_BUILD_EXP_FILE}"
+	cygmake libtk${slot}.a STUB_LIB_FILE=libtk${slot}.a STUB_LIB_OBJS=\${OBJS}
+}
+
+src_install() {
+	cd ${B}/unix
+	cyginstall
+
+	dolib libtk${slot}.a
+	mv ${D}/usr/lib/libtk${slot}.dll ${D}/usr/bin
+
+	sed -i \
+		-e "s|^\(TK_BUILD_LIB_SPEC\)='.*|\1='-Wl,/usr/lib/libtk${slot}.dll.a'|" \
+		-e "s|^\(TK_SRC_DIR\)='.*'|\1='/usr/include/tcl${slot}'|" \
+		-e "s|^\(TK_BUILD_STUB_LIB_SPEC\)='.*|\1='-Wl,/usr/lib/libtkstub${slot}.a'|" \
+		-e "s|^\(TK_BUILD_STUB_LIB_PATH\)='.*/unix|\1='/usr/lib|" \
+		-e "s|^\(TK_STUB_LIB_SPEC\)='.*|\1='-Wl,-ltkstub${slot}'|" \
+		${D}/usr/lib/tkConfig.sh || error
+
+	# fix Tk location in pkgIndex.tcl
+	sed -i -e 's#\.\. libtk#.. .. bin libtk#' ${D}/usr/lib/tk${slot}/pkgIndex.tcl
+
+	# install private headers
+	insinto /usr/include/tcl${slot}/unix
+	doins ${S}/unix/*.h
+	insinto /usr/include/tcl${slot}/generic
+	doins ${S}/generic/*.h
+
+	# make this the default Tk version
+	dosym wish${slot}.exe /usr/bin/wish
+	dosym ../tkConfig.sh /usr/lib/tk${slot}/tkConfig.sh
+	dosym libtk${slot}.a /usr/lib/libtk.a
+	dosym libtk${slot}.dll.a /usr/lib/libtk.dll.a
+	dosym libtkstub${slot}.a /usr/lib/libtkstub.a
+}
