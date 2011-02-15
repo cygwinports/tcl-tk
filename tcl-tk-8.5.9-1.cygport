@@ -6,8 +6,6 @@ HOMEPAGE="http://tcl.tk/"
 SRC_URI="mirror://sourceforge/tcl/${ORIG_PN}${PV}-src.tar.gz"
 SRC_DIR="${ORIG_PN}${PV}"
 
-PATCH_URI="8.5-cygwin.patch"
-
 DISTCLEANFILES="unix/aclocal.m4"
 DIFF_EXCLUDES="aclocal.m4 configure"
 
@@ -19,7 +17,7 @@ src_compile() {
 	mkdir -p ${B}/unix
 	cd ${B}/unix
 	cygconf --enable-man-symlinks
-	cygmake -j1 TK_SHLIB_LD_EXTRAS="-Wl,--out-implib,\${TK_BUILD_EXP_FILE}"
+	cygmake -j1 TK_SHLIB_LD_EXTRAS="-Wl,--out-implib,\$@.a"
 	cygmake libtk${slot}.a STUB_LIB_FILE=libtk${slot}.a STUB_LIB_OBJS=\${OBJS}
 }
 
@@ -27,7 +25,7 @@ src_install() {
 	cd ${B}/unix
 	cyginstall
 
-	dolib libtk${slot}.a
+	dolib libtk${slot}.a libtk${slot}.dll.a
 	mv ${D}/usr/lib/libtk${slot}.dll ${D}/usr/bin
 
 	sed -i \
