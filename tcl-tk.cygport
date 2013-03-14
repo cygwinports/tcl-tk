@@ -1,0 +1,56 @@
+NAME="tcl-tk"
+VERSION=8.5.11
+RELEASE=1
+CATEGORY="Interpreters Tcl X11"
+SUMMARY="Tcl X11 toolkit"
+DESCRIPTION="An X11 toolkit implemented with the Tcl scripting language."
+HOMEPAGE="http://tcl.tk/"
+SRC_URI="mirror://sourceforge/tcl/tk${PV}-src.tar.gz"
+SRC_DIR="tk${PV}"
+
+DISTCLEANFILES="unix/aclocal.m4"
+DIFF_EXCLUDES="aclocal.m4 configure"
+
+src_compile() {
+	cd ${S}/unix
+	WANT_AUTOMAKE=1.4
+	cygautoreconf
+
+	mkdir -p ${B}/unix
+	cd ${B}/unix
+	cygconf --enable-man-symlinks
+	cygmake -j1 TK_SHLIB_LD_EXTRAS="-Wl,--out-implib,\$@.a"
+	cygmake libtk${VERSION%.*}.a STUB_LIB_FILE=libtk${VERSION%.*}.a STUB_LIB_OBJS=\${OBJS}
+}
+
+src_install() {
+	cd ${B}/unix
+	cyginstall
+
+	dolib libtk${VERSION%.*}.a libtk${VERSION%.*}.dll.a
+	mv ${D}/usr/lib/libtk${VERSION%.*}.dll ${D}/usr/bin
+
+	sed -i \
+		-e "s|^\(TK_BUILD_LIB_SPEC\)='.*|\1='-Wl,/usr/lib/libtk${VERSION%.*}.dll.a'|" \
+		-e "s|^\(TK_SRC_DIR\)='.*'|\1='/usr/include/tcl${VERSION%.*}'|" \
+		-e "s|^\(TK_BUILD_STUB_LIB_SPEC\)='.*|\1='-Wl,/usr/lib/libtkstub${VERSION%.*}.a'|" \
+		-e "s|^\(TK_BUILD_STUB_LIB_PATH\)='.*/unix|\1='/usr/lib|" \
+		-e "s|^\(TK_STUB_LIB_SPEC\)='.*|\1='-Wl,-ltkstub${VERSION%.*}'|" \
+		${D}/usr/lib/tkConfig.sh || error
+
+	# fix Tk location in pkgIndex.tcl
+	sed -i -e 's#\.\. libtk#.. .. bin libtk#' ${D}/usr/lib/tk${VERSION%.*}/pkgIndex.tcl
+
+	# install private headers
+	includeinto tcl${VERSION%.*}/unix
+	doinclude ${S}/unix/*.h
+	includeinto tcl${VERSION%.*}/generic
+	doinclude ${S}/generic/*.h
+
+	# make this the default Tk version
+	dosym wish${VERSION%.*}.exe /usr/bin/wish
+	dosym ../tkConfig.sh /usr/lib/tk${VERSION%.*}/tkConfig.sh
+	dosym libtk${VERSION%.*}.a /usr/lib/libtk.a
+	dosym libtk${VERSION%.*}.dll.a /usr/lib/libtk.dll.a
+	dosym libtkstub${VERSION%.*}.a /usr/lib/libtkstub.a
+}
