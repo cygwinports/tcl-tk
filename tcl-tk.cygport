@@ -1,5 +1,5 @@
 NAME="tcl-tk"
-VERSION=8.5.11
+VERSION=8.5.18
 RELEASE=1
 CATEGORY="Interpreters Tcl X11"
 SUMMARY="Tcl X11 toolkit"
@@ -7,6 +7,29 @@ DESCRIPTION="An X11 toolkit implemented with the Tcl scripting language."
 HOMEPAGE="http://tcl.tk/"
 SRC_URI="mirror://sourceforge/tcl/tk${PV}-src.tar.gz"
 SRC_DIR="tk${PV}"
+PATCH_URI="8.5.18-cygwin-unix.patch"
+
+PKG_NAMES="${NAME} ${NAME}-devel"
+tcl_tk_CONTENTS="
+	usr/bin/libtk${VERSION%.*}.dll
+	usr/bin/wish
+	usr/bin/wish${VERSION%.*}.exe
+	usr/lib/tk${VERSION%.*}/
+	usr/share/doc/
+	usr/share/man/man1/
+	usr/share/man/mann/
+"
+tcl_tk_devel_CONTENTS="
+	usr/include/tcl${VERSION%.*}/
+	usr/include/tk*.h
+	usr/lib/libtk.dll.a
+	usr/lib/libtk${VERSION%.*}.dll.a
+	usr/lib/libtkstub.a
+	usr/lib/libtkstub${VERSION%.*}.a
+	usr/lib/tkConfig.sh
+	usr/lib/pkgconfig/tk.pc
+	usr/share/man/man3/
+"
 
 DISTCLEANFILES="unix/aclocal.m4"
 DIFF_EXCLUDES="aclocal.m4 configure"
@@ -20,14 +43,14 @@ src_compile() {
 	cd ${B}/unix
 	cygconf --enable-man-symlinks
 	cygmake -j1 TK_SHLIB_LD_EXTRAS="-Wl,--out-implib,\$@.a"
-	cygmake libtk${VERSION%.*}.a STUB_LIB_FILE=libtk${VERSION%.*}.a STUB_LIB_OBJS=\${OBJS}
+#	cygmake libtk${VERSION%.*}.a STUB_LIB_FILE=libtk${VERSION%.*}.a STUB_LIB_OBJS=\${OBJS}
 }
 
 src_install() {
 	cd ${B}/unix
 	cyginstall
 
-	dolib libtk${VERSION%.*}.a libtk${VERSION%.*}.dll.a
+	dolib libtk${VERSION%.*}.dll.a
 	mv ${D}/usr/lib/libtk${VERSION%.*}.dll ${D}/usr/bin
 
 	sed -i \
@@ -50,7 +73,6 @@ src_install() {
 	# make this the default Tk version
 	dosym wish${VERSION%.*}.exe /usr/bin/wish
 	dosym ../tkConfig.sh /usr/lib/tk${VERSION%.*}/tkConfig.sh
-	dosym libtk${VERSION%.*}.a /usr/lib/libtk.a
 	dosym libtk${VERSION%.*}.dll.a /usr/lib/libtk.dll.a
 	dosym libtkstub${VERSION%.*}.a /usr/lib/libtkstub.a
 }
