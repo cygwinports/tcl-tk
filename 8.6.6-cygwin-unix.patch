@@ -1,0 +1,294 @@
+--- origsrc/tk8.6.6/generic/tk.h	2016-07-22 07:11:20.000000000 -0500
++++ src/tk8.6.6/generic/tk.h	2017-03-04 23:44:46.336158600 -0600
+@@ -1496,7 +1496,7 @@ typedef struct Tk_ElementSpec {
+ #define Tk_Release		Tcl_Release
+ 
+ /* Removed Tk_Main, use macro instead */
+-#if defined(_WIN32) || defined(__CYGWIN__)
++#if defined(_WIN32)
+ #define Tk_Main(argc, argv, proc) Tk_MainEx(argc, argv, proc, \
+ 	(Tcl_FindExecutable(0), (Tcl_CreateInterp)()))
+ #else
+--- origsrc/tk8.6.6/generic/tkImgPhoto.h	2016-07-22 07:11:20.000000000 -0500
++++ src/tk8.6.6/generic/tkImgPhoto.h	2017-03-04 23:44:58.102241600 -0600
+@@ -19,8 +19,6 @@
+ #include "tkInt.h"
+ #ifdef _WIN32
+ #include "tkWinInt.h"
+-#elif defined(__CYGWIN__)
+-#include "tkUnixInt.h"
+ #endif
+ 
+ /*
+--- origsrc/tk8.6.6/generic/tkIntDecls.h	2016-07-26 09:07:50.000000000 -0500
++++ src/tk8.6.6/generic/tkIntDecls.h	2017-03-04 23:45:27.087680000 -0600
+@@ -1150,7 +1150,7 @@ extern const TkIntStubs *tkIntStubsPtr;
+ /*
+  * On X11, these macros are just wrappers for the equivalent X Region calls.
+  */
+-#if !(defined(_WIN32) || defined(__CYGWIN__) || defined(MAC_OSX_TK)) /* X11 */
++#if !(defined(_WIN32) || defined(MAC_OSX_TK)) /* X11 */
+ 
+ #undef TkClipBox
+ #undef TkCreateRegion
+--- origsrc/tk8.6.6/generic/tkIntPlatDecls.h	2016-07-26 09:07:50.000000000 -0500
++++ src/tk8.6.6/generic/tkIntPlatDecls.h	2017-03-04 23:46:06.277518200 -0600
+@@ -34,7 +34,7 @@ extern "C" {
+  * Exported function declarations:
+  */
+ 
+-#if defined(_WIN32) || defined(__CYGWIN__) /* WIN */
++#if defined(_WIN32) /* WIN */
+ /* 0 */
+ EXTERN char *		TkAlignImageData(XImage *image, int alignment,
+ 				int bitOrder);
+@@ -260,7 +260,7 @@ EXTERN void *		TkMacOSXDrawable(Drawable
+ EXTERN int		TkpScanWindowId(Tcl_Interp *interp,
+ 				const char *string, Window *idPtr);
+ #endif /* AQUA */
+-#if !(defined(_WIN32) || defined(__CYGWIN__) || defined(MAC_OSX_TK)) /* X11 */
++#if !(defined(_WIN32) || defined(MAC_OSX_TK)) /* X11 */
+ /* 0 */
+ EXTERN void		TkCreateXEventSource(void);
+ /* Slot 1 is reserved */
+@@ -295,7 +295,7 @@ typedef struct TkIntPlatStubs {
+     int magic;
+     void *hooks;
+ 
+-#if defined(_WIN32) || defined(__CYGWIN__) /* WIN */
++#if defined(_WIN32) /* WIN */
+     char * (*tkAlignImageData) (XImage *image, int alignment, int bitOrder); /* 0 */
+     void (*reserved1)(void);
+     void (*tkGenerateActivateEvents) (TkWindow *winPtr, int active); /* 2 */
+@@ -401,7 +401,7 @@ typedef struct TkIntPlatStubs {
+     void * (*tkMacOSXDrawable) (Drawable drawable); /* 54 */
+     int (*tkpScanWindowId) (Tcl_Interp *interp, const char *string, Window *idPtr); /* 55 */
+ #endif /* AQUA */
+-#if !(defined(_WIN32) || defined(__CYGWIN__) || defined(MAC_OSX_TK)) /* X11 */
++#if !(defined(_WIN32) || defined(MAC_OSX_TK)) /* X11 */
+     void (*tkCreateXEventSource) (void); /* 0 */
+     void (*reserved1)(void);
+     void (*reserved2)(void);
+@@ -431,7 +431,7 @@ extern const TkIntPlatStubs *tkIntPlatSt
+  * Inline function declarations:
+  */
+ 
+-#if defined(_WIN32) || defined(__CYGWIN__) /* WIN */
++#if defined(_WIN32) /* WIN */
+ #define TkAlignImageData \
+ 	(tkIntPlatStubsPtr->tkAlignImageData) /* 0 */
+ /* Slot 1 is reserved */
+@@ -631,7 +631,7 @@ extern const TkIntPlatStubs *tkIntPlatSt
+ #define TkpScanWindowId \
+ 	(tkIntPlatStubsPtr->tkpScanWindowId) /* 55 */
+ #endif /* AQUA */
+-#if !(defined(_WIN32) || defined(__CYGWIN__) || defined(MAC_OSX_TK)) /* X11 */
++#if !(defined(_WIN32) || defined(MAC_OSX_TK)) /* X11 */
+ #define TkCreateXEventSource \
+ 	(tkIntPlatStubsPtr->tkCreateXEventSource) /* 0 */
+ /* Slot 1 is reserved */
+--- origsrc/tk8.6.6/generic/tkIntXlibDecls.h	2016-07-26 09:07:50.000000000 -0500
++++ src/tk8.6.6/generic/tkIntXlibDecls.h	2017-03-04 23:46:25.053906500 -0600
+@@ -44,7 +44,7 @@ extern "C" {
+  * Exported function declarations:
+  */
+ 
+-#if defined(_WIN32) || defined(__CYGWIN__) /* WIN */
++#if defined(_WIN32) /* WIN */
+ /* 0 */
+ EXTERN int		XSetDashes(Display *display, GC gc, int dash_offset,
+ 				_Xconst char *dash_list, int n);
+@@ -626,7 +626,7 @@ typedef struct TkIntXlibStubs {
+     int magic;
+     void *hooks;
+ 
+-#if defined(_WIN32) || defined(__CYGWIN__) /* WIN */
++#if defined(_WIN32) /* WIN */
+     int (*xSetDashes) (Display *display, GC gc, int dash_offset, _Xconst char *dash_list, int n); /* 0 */
+     XModifierKeymap * (*xGetModifierMapping) (Display *d); /* 1 */
+     XImage * (*xCreateImage) (Display *d, Visual *v, unsigned int ui1, int i1, int i2, char *cp, unsigned int ui2, unsigned int ui3, int i3, int i4); /* 2 */
+@@ -851,7 +851,7 @@ extern const TkIntXlibStubs *tkIntXlibSt
+  * Inline function declarations:
+  */
+ 
+-#if defined(_WIN32) || defined(__CYGWIN__) /* WIN */
++#if defined(_WIN32) /* WIN */
+ #define XSetDashes \
+ 	(tkIntXlibStubsPtr->xSetDashes) /* 0 */
+ #define XGetModifierMapping \
+--- origsrc/tk8.6.6/generic/tkPlatDecls.h	2016-07-26 09:07:50.000000000 -0500
++++ src/tk8.6.6/generic/tkPlatDecls.h	2017-03-04 23:47:14.020012800 -0600
+@@ -37,7 +37,7 @@ extern "C" {
+  * Exported function declarations:
+  */
+ 
+-#if defined(_WIN32) || defined(__CYGWIN__) /* WIN */
++#if defined(_WIN32) /* WIN */
+ /* 0 */
+ EXTERN Window		Tk_AttachHWND(Tk_Window tkwin, HWND hwnd);
+ /* 1 */
+@@ -88,7 +88,7 @@ typedef struct TkPlatStubs {
+     int magic;
+     void *hooks;
+ 
+-#if defined(_WIN32) || defined(__CYGWIN__) /* WIN */
++#if defined(_WIN32) /* WIN */
+     Window (*tk_AttachHWND) (Tk_Window tkwin, HWND hwnd); /* 0 */
+     HINSTANCE (*tk_GetHINSTANCE) (void); /* 1 */
+     HWND (*tk_GetHWND) (Window window); /* 2 */
+@@ -123,7 +123,7 @@ extern const TkPlatStubs *tkPlatStubsPtr
+  * Inline function declarations:
+  */
+ 
+-#if defined(_WIN32) || defined(__CYGWIN__) /* WIN */
++#if defined(_WIN32) /* WIN */
+ #define Tk_AttachHWND \
+ 	(tkPlatStubsPtr->tk_AttachHWND) /* 0 */
+ #define Tk_GetHINSTANCE \
+--- origsrc/tk8.6.6/generic/tkStubInit.c	2016-07-26 09:07:50.000000000 -0500
++++ src/tk8.6.6/generic/tkStubInit.c	2017-03-04 23:47:46.670431500 -0600
+@@ -74,7 +74,7 @@ TkCreateXEventSource(void)
+  */
+ #   define XParseColor	TkParseColor
+ 
+-#   ifdef __CYGWIN__
++#   if 0
+ 
+ /*
+  * Trick, so we don't have to include <windows.h> here, which in any
+@@ -455,7 +455,7 @@ static const TkIntStubs tkIntStubs = {
+ static const TkIntPlatStubs tkIntPlatStubs = {
+     TCL_STUB_MAGIC,
+     0,
+-#if defined(_WIN32) || defined(__CYGWIN__) /* WIN */
++#if defined(_WIN32) /* WIN */
+     TkAlignImageData, /* 0 */
+     0, /* 1 */
+     TkGenerateActivateEvents, /* 2 */
+@@ -561,7 +561,7 @@ static const TkIntPlatStubs tkIntPlatStu
+     TkMacOSXDrawable, /* 54 */
+     TkpScanWindowId, /* 55 */
+ #endif /* AQUA */
+-#if !(defined(_WIN32) || defined(__CYGWIN__) || defined(MAC_OSX_TK)) /* X11 */
++#if !(defined(_WIN32) || defined(MAC_OSX_TK)) /* X11 */
+     TkCreateXEventSource, /* 0 */
+     0, /* 1 */
+     0, /* 2 */
+@@ -582,7 +582,7 @@ static const TkIntPlatStubs tkIntPlatStu
+ static const TkIntXlibStubs tkIntXlibStubs = {
+     TCL_STUB_MAGIC,
+     0,
+-#if defined(_WIN32) || defined(__CYGWIN__) /* WIN */
++#if defined(_WIN32) /* WIN */
+     XSetDashes, /* 0 */
+     XGetModifierMapping, /* 1 */
+     XCreateImage, /* 2 */
+@@ -798,7 +798,7 @@ static const TkIntXlibStubs tkIntXlibStu
+ static const TkPlatStubs tkPlatStubs = {
+     TCL_STUB_MAGIC,
+     0,
+-#if defined(_WIN32) || defined(__CYGWIN__) /* WIN */
++#if defined(_WIN32) /* WIN */
+     Tk_AttachHWND, /* 0 */
+     Tk_GetHINSTANCE, /* 1 */
+     Tk_GetHWND, /* 2 */
+--- origsrc/tk8.6.6/generic/tkTest.c	2016-07-22 07:11:20.000000000 -0500
++++ src/tk8.6.6/generic/tkTest.c	2017-03-04 23:48:34.583543300 -0600
+@@ -163,7 +163,7 @@ static int		TestfontObjCmd(ClientData du
+ static int		TestmakeexistObjCmd(ClientData dummy,
+ 			    Tcl_Interp *interp, int objc,
+ 			    Tcl_Obj *const objv[]);
+-#if !(defined(_WIN32) || defined(MAC_OSX_TK) || defined(__CYGWIN__))
++#if !(defined(_WIN32) || defined(MAC_OSX_TK))
+ static int		TestmenubarObjCmd(ClientData dummy,
+ 			    Tcl_Interp *interp, int objc,
+ 			    Tcl_Obj *const objv[]);
+@@ -192,7 +192,7 @@ static void		CustomOptionFree(ClientData
+ static int		TestpropObjCmd(ClientData dummy,
+ 			    Tcl_Interp *interp, int objc,
+ 			    Tcl_Obj * const objv[]);
+-#if !(defined(_WIN32) || defined(MAC_OSX_TK) || defined(__CYGWIN__))
++#if !(defined(_WIN32) || defined(MAC_OSX_TK))
+ static int		TestwrapperObjCmd(ClientData dummy,
+ 			    Tcl_Interp *interp, int objc,
+ 			    Tcl_Obj * const objv[]);
+@@ -269,7 +269,7 @@ Tktest_Init(
+ #if defined(_WIN32) || defined(MAC_OSX_TK)
+     Tcl_CreateObjCommand(interp, "testmetrics", TestmetricsObjCmd,
+ 	    (ClientData) Tk_MainWindow(interp), NULL);
+-#elif !defined(__CYGWIN__)
++#else
+     Tcl_CreateObjCommand(interp, "testmenubar", TestmenubarObjCmd,
+ 	    (ClientData) Tk_MainWindow(interp), NULL);
+     Tcl_CreateObjCommand(interp, "testsend", TkpTestsendCmd,
+@@ -1699,7 +1699,7 @@ TestmakeexistObjCmd(
+  */
+ 
+ 	/* ARGSUSED */
+-#if !(defined(_WIN32) || defined(MAC_OSX_TK) || defined(__CYGWIN__))
++#if !(defined(_WIN32) || defined(MAC_OSX_TK))
+ static int
+ TestmenubarObjCmd(
+     ClientData clientData,	/* Main window for application. */
+@@ -1896,7 +1896,7 @@ TestpropObjCmd(
+     return TCL_OK;
+ }
+ 
+-#if !(defined(_WIN32) || defined(MAC_OSX_TK) || defined(__CYGWIN__))
++#if !(defined(_WIN32) || defined(MAC_OSX_TK))
+ /*
+  *----------------------------------------------------------------------
+  *
+--- origsrc/tk8.6.6/generic/tkTextDisp.c	2016-07-26 09:07:32.000000000 -0500
++++ src/tk8.6.6/generic/tkTextDisp.c	2017-03-04 23:48:48.351406300 -0600
+@@ -18,8 +18,6 @@
+ 
+ #ifdef _WIN32
+ #include "tkWinInt.h"
+-#elif defined(__CYGWIN__)
+-#include "tkUnixInt.h"
+ #endif
+ 
+ #ifdef MAC_OSX_TK
+--- origsrc/tk8.6.6/unix/Makefile.in	2016-07-26 09:07:50.000000000 -0500
++++ src/tk8.6.6/unix/Makefile.in	2017-03-04 23:51:16.797625200 -0600
+@@ -586,10 +586,6 @@ ${LIB_FILE}: ${STUB_LIB_FILE} @LIB_RSRC_
+ 	@MAKE_LIB@
+ 
+ ${STUB_LIB_FILE}: ${STUB_LIB_OBJS}
+-	@if test "x${LIB_FILE}" = "xlibtk${MAJOR_VERSION}.${MINOR_VERSION}.dll"; then \
+-	    (cd ${TOP_DIR}/win; ${MAKE} tk${MAJOR_VERSION}${MINOR_VERSION}.dll); \
+-	    cp "${TOP_DIR}/win/tk${MAJOR_VERSION}${MINOR_VERSION}.dll" .; \
+-	fi
+ 	rm -f $@
+ 	@MAKE_STUB_LIB@
+ 
+--- origsrc/tk8.6.6/unix/tkUnixPort.h	2016-07-22 07:11:21.000000000 -0500
++++ src/tk8.6.6/unix/tkUnixPort.h	2017-03-04 23:51:00.926106700 -0600
+@@ -109,7 +109,7 @@
+ #   define NBBY 8
+ #endif
+ 
+-#ifdef __CYGWIN__
++#if 0
+ #   include "tkIntXlibDecls.h"
+ #   define UINT unsigned int
+ #   define HWND void *
+@@ -166,7 +166,7 @@
+ #define TkpButtonSetDefaults() {}
+ #define TkpDestroyButton(butPtr) {}
+ #define TkSelUpdateClipboard(a,b) {}
+-#ifndef __CYGWIN__
++#if 1
+ #define TkSetPixmapColormap(p,c) {}
+ #endif
+ 
+@@ -184,7 +184,7 @@
+  * This should perhaps use the real size of an XID.
+  */
+ 
+-#ifndef __CYGWIN__
++#if 1
+ #define TkpPrintWindowId(buf,w) \
+ 	sprintf((buf), "%#08lx", (unsigned long) (w))
+ #endif

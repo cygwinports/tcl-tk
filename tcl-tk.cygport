@@ -1,13 +1,13 @@
 NAME="tcl-tk"
-VERSION=8.5.18
+VERSION=8.6.6
 RELEASE=1
 CATEGORY="Interpreters Tcl X11"
 SUMMARY="Tcl X11 toolkit"
 DESCRIPTION="An X11 toolkit implemented with the Tcl scripting language."
 HOMEPAGE="http://tcl.tk/"
-SRC_URI="mirror://sourceforge/tcl/tk${PV}-src.tar.gz"
-SRC_DIR="tk${PV}"
-PATCH_URI="8.5.18-cygwin-unix.patch"
+SRC_URI="mirror://sourceforge/tcl/tk${VERSION}-src.tar.gz"
+SRC_DIR="tk${VERSION}"
+PATCH_URI="8.6.6-cygwin-unix.patch"
 
 PKG_NAMES="${NAME} ${NAME}-devel"
 tcl_tk_CONTENTS="
