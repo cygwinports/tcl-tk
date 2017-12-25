@@ -1,5 +1,5 @@
 NAME="tcl-tk"
-VERSION=8.6.6
+VERSION=8.6.8
 RELEASE=1
 CATEGORY="Interpreters Tcl X11"
 SUMMARY="Tcl X11 toolkit"
